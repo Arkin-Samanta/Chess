@@ -106,6 +106,23 @@ body[data-bg=d]{--o1:#8b93a7;--o2:#4b5263;--o3:#c3c8d6}
 .nolm .lm::before{display:none}
 .noco .sq b{display:none}
 .flat .board{--n:none}
+#ovm{overflow:auto;place-items:start center}#ovm .card{margin:auto}
+#onl{display:flex;flex-direction:column;gap:8px}
+#lob{display:flex;flex-direction:column;gap:6px}
+.mine{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;border-radius:18px;background:var(--gl)}
+.mine small{color:var(--mut);font-weight:600}
+.mine b{font:700 30px/1 ui-monospace,Menlo,monospace;letter-spacing:.18em;cursor:pointer;color:var(--ink)}
+.mine span{font-size:13px;color:var(--mut)}
+.lr .pw{width:112px;border:0;border-radius:12px;padding:7px 10px;background:rgba(0,0,0,.14);color:var(--ink);font:600 14px ui-monospace,Menlo,monospace;letter-spacing:.15em;text-transform:uppercase}
+#lob .em{margin:4px 0 0;text-align:left;font-size:13px;color:var(--mut)}
+.board{position:relative}
+.arw{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:7}
+.eg{display:block;width:100%;height:64px;border-radius:12px;margin:0 0 10px;cursor:pointer}
+.kh{margin-bottom:6px}.kh .btn{padding:4px 12px;margin-left:6px}
+.kml{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.km{border:0;border-left:4px solid var(--g,#999);border-radius:12px;padding:8px 10px;background:rgba(0,0,0,.1);color:var(--ink);font:inherit;font-size:13px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.km.on{background:var(--gl);box-shadow:0 0 0 2px var(--g)}
+.km b{font-size:14px}.km span{color:var(--mut);font-size:12px;line-height:1.35}
 #pbox textarea,#pbox input,#gu{width:100%;border:0;border-radius:14px;padding:10px 12px;background:rgba(0,0,0,.12);color:var(--ink);font:12px/1.35 ui-monospace,Menlo,monospace;resize:none;margin:6px 0}
 #pbox textarea{height:84px}
 #pbox p{margin:8px 0 0;font-size:13px;color:var(--mut);text-align:left}
@@ -210,16 +227,17 @@ body.one .log div{white-space:normal;overflow:auto;max-height:calc(100vh - 340px
 <div class="log glass"><div id="mv"></div></div>
 <div class="ov show" id="ovm"><div class="card glass"><h2>New game</h2>
 <div><label>Play as</label><div class="seg" data-k="s"><button class="on" data-v="w">White</button><button data-v="b">Black</button><button data-v="r">Random</button></div></div>
-<div><label>Opponent</label><div class="seg" data-k="o"><button class="on" data-v="ai">Computer</button><button data-v="fr">Friend</button></div></div>
+<div><label>Opponent</label><div class="seg" data-k="o"><button class="on" data-v="ai">Computer</button><button data-v="fr">Friend</button><button data-v="on">Online</button></div></div>
 <div id="dr"><label>Difficulty</label><div class="seg" data-k="l"><button data-v="1">Easy</button><button class="on" data-v="2">Medium</button><button data-v="3">Hard</button><button data-v="4">Expert</button></div></div>
 <div><label>Time per player</label><div class="seg" data-k="m"><button class="on" data-v="0">Off</button><button data-v="1">1m</button><button data-v="3">3m</button><button data-v="5">5m</button><button data-v="10">10m</button><button data-v="30">30m</button></div></div>
 <div><label>Increment</label><div class="seg" data-k="i"><button class="on" data-v="0">None</button><button data-v="2">+2s</button><button data-v="5">+5s</button><button data-v="10">+10s</button></div></div>
+<div id="onl" hidden><label>Your name</label><input id="nmi" maxlength="16" placeholder="Your name"><label>Lobbies</label><div id="lob"></div></div>
 <button class="btn pri" id="go">Start</button></div></div>
 <div class="ov" id="ovp"><div class="card glass"><h2>Promote pawn</h2><div class="pr" id="pr"></div></div></div>
 <div class="ov" id="ovr"><div class="card glass"><h2 id="rh"></h2><p id="rs"></p><div class="row"><button class="btn" id="rv">Review</button><button class="btn" id="rp">Copy PGN</button><button class="btn" id="ra2">Analyze</button><button class="btn pri" id="ra">Play again</button></div></div></div>
 <div id="ts" class="glass"></div><div id="cf"></div>
 <div class="ov" id="ovo"><div class="card glass"><h2>Play online</h2>
-<div><label>Your name</label><input id="nmi" maxlength="16" placeholder="Your name"></div>
+
 <div><label>You play</label><div class="seg" data-k="s"><button class="on" data-v="w">White</button><button data-v="b">Black</button><button data-v="r">Random</button></div></div>
 <div><label>Time per player</label><div class="seg" data-k="m"><button class="on" data-v="0">Off</button><button data-v="3">3m</button><button data-v="5">5m</button><button data-v="10">10m</button></div></div>
 <div id="p2p"><label>Invite a friend (no account needed)</label><div class="row"><button class="btn pri" id="pc">Create room</button><button class="btn" id="pj">Join with code</button></div><div id="pbox" hidden></div></div>
@@ -339,7 +357,7 @@ function draw(){
     +(vc?'':`<b class="rk">${8-r}</b>`)+(vr<7?'':`<b class="fl">${F[c]}</b>`)
     +(pop&&last&&last.cp&&q==last.cq?pc(last.cp,'pc gh')+bur('#ff7a45'):'')+(pop&&last&&last.pr&&q==last.t?bur('#ffd60a'):'')
     +(p?pc(p,'pc'+(src>=0?' sl':dd&&pop&&last&&q==last.t?' ld':ro?' in':''),src>=0?`--dx:${v=='w'?(src&7)-c:c-(src&7)};--dy:${v=='w'?(src>>3)-r:r-(src>>3)}`:ro?`animation-delay:${(vr+vc)*28}ms`:''):'')+'</div>'}
-  $('#b'+v).innerHTML=h}}
+  $('#b'+v).innerHTML=h+(hnt?arw(v):'')}}
 
 function upd(){
  L=legal(S);const c=inChk(S),W={w:'White',b:'Black'},pcs=S.b.filter(x=>x&&x[1]!='K').map(x=>x[1]);
@@ -389,9 +407,9 @@ $('#pr').onclick=e=>{const q=e.target.closest('button');if(!q)return;$('#ovp').c
 $('#ovp').onclick=e=>{if(e.target.id=='ovp')e.target.classList.remove('show')};
 $('#ovm').onclick=e=>{if(e.target.id=='ovm')e.target.classList.remove('show')};
 document.querySelectorAll('.seg').forEach(g=>g.onclick=e=>{const b=e.target.closest('button');if(!b)return;
- g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b));cfg[g.dataset.k]=b.dataset.v;$('#dr').hidden=cfg.o!='ai'});
+ g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b));cfg[g.dataset.k]=b.dataset.v;$('#dr').hidden=cfg.o!='ai';$('#onl').hidden=cfg.o!='on';$('#go').hidden=cfg.o=='on';if(cfg.o=='on'&&g.dataset.k=='o')goOnline()});
 $('#go').onclick=()=>{$('#ovm').classList.remove('show');netLeave();newGame()};
-$('#nw').onclick=()=>{syncSeg();$('#ovm').classList.add('show')};
+$('#nw').onclick=()=>{syncSeg();$('#ovm').classList.add('show');if(cfg.o=='on')goOnline()};
 $('#ra').onclick=()=>{$('#ovr').classList.remove('show');$('#ovm').classList.add('show')};
 $('#rv').onclick=()=>$('#ovr').classList.remove('show');
 $('#ovr').onclick=e=>{if(e.target.id=='ovr')e.target.classList.remove('show')};
@@ -464,7 +482,7 @@ addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTARE
  else if(k=='escape')document.querySelectorAll('.ov.show').forEach(o=>{if(o.id!='ovp')o.classList.remove('show')})});
 const QL={b:'Best',g:'Good',i:'Inaccuracy',m:'Mistake',x:'Blunder'},QG={b:'★',g:'',i:'?!',m:'?',x:'??'},B64='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/',enc=m=>B64[m.f]+B64[m.t]+(m.pr||'-'),esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 let RV=null,rvw=0,room=null,myP=null,out=null,inc=null,seen={};
-function syncSeg(){document.querySelectorAll('.seg[data-k]').forEach(g=>g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v==cfg[g.dataset.k])))}
+function syncSeg(){$('#dr').hidden=cfg.o!='ai';$('#onl').hidden=cfg.o!='on';$('#go').hidden=cfg.o=='on';document.querySelectorAll('.seg[data-k]').forEach(g=>g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v==cfg[g.dataset.k])))}
 function rb(s,d){dl=1/0;let b=-1e9,bm=null;const w=m=>s.b[m.t]?V[s.b[m.t][1]]:0;for(const m of legal(s).sort((x,y)=>w(y)-w(x))){const v=-nm(mk(s,m),d-1,-1e9,-b);if(v>b){b=v;bm=m}}return{m:bm,v:b}}
 function forks(s,m){const p=s.b[m.t];if(!p||p[1]=='K')return 0;const o=s.t,T={...s,t:o=='w'?'b':'w',ep:-1};
  const h=gen(T).filter(x=>{const q=s.b[x.t];return x.f==m.t&&q&&q[0]==o&&q[1]!='P'&&(q[1]=='K'||V[q[1]]>V[p[1]]||!att(s.b,x.t,o))}).map(x=>s.b[x.t][1]);
@@ -477,7 +495,7 @@ function grade(P,M,i){
  if(inChk(pn))t.push(legal(pn).length?'Check':'Checkmate');
  if(same)n.push('Best move');else{n.push((b.v>9e4&&v<9e4?'Missed mate: ':'Better was ')+san(s,b.m,Ls)+' (−'+(loss/100).toFixed(1)+')');
   if(q=='m'||q=='x'){const r=rb(pn,2);if(r.m&&pn.b[r.m.t])n.push('Allows '+san(pn,r.m,legal(pn))+', winning the '+NAME[pn.b[r.m.t][1]].toLowerCase())}}
- return{q,loss,bm:b.m,t,n}}
+ return{q,loss,bm:b.m,t,n,e:Math.max(-800,Math.min(800,(s.t=='w'?1:-1)*v))}}
 async function review(){
  if(!(over||spec)||(RV&&!RV.v)||!stack.length)return;
  const P=RV?RV.P:[...stack.map(x=>x[0]),S],M=RV?RV.M:[...stack.slice(1).map(x=>x[1]),last],n=M.length,g=gid,it=[],R=RV={P,M,n,k:n,it,busy:1,p:0};
@@ -486,7 +504,7 @@ async function review(){
   if(g!=gid||RV!==R)return;
   const x=grade(P,M,i);x.san=sn[i];it.push(x);R.p=i+1;rvUI();
   await new Promise(r=>setTimeout(r,0))}
- R.busy=0;go(n)}
+ R.busy=0;R.km=it.map((x,i)=>[x,i+1]).filter(a=>a[0].q=='m'||a[0].q=='x'||a[0].t.includes('Fork')||a[0].t.includes('Checkmate')).sort((a,b)=>b[0].loss-a[0].loss).slice(0,8).map(a=>a[1]).sort((a,b)=>a-b);go(R.km.length?R.km[0]:n,R.km.length&&'mx'.includes(it[R.km[0]-1].q)?1:0)}
 function go(k,a){if(!RV||RV.busy)return;k=Math.max(0,Math.min(RV.n,k));a=a&&k&&RV.it&&RV.it[k-1].q!='b'?1:0;const p=a?k-1:k;
  fresh=!a&&k>RV.k?1:0;RV.k=k;RV.a=a;S=RV.P[p];last=p?RV.M[p-1]:null;chk=inChk(S)?ks(S.b,S.t):-1;sel=-1;tg=new Map;
  hnt=a?RV.it[k-1].bm:null;$('#st').textContent=k?'Move '+k+' of '+RV.n+(RV.it?' · '+QL[RV.it[k-1].q]:''):'Starting position';draw();rvUI()}
@@ -498,25 +516,25 @@ function rvUI(){
   const ac=a.length?Math.max(0,Math.round(100-a.reduce((s,x)=>s+Math.min(x.loss,500),0)/a.length*.45)):100;
   return `<div><small>${W[c]}${ai&&c==me?' · you':''}</small><b>${ac}%</b><span>${n.b} best · ${n.i} inaccuracies · ${n.m} mistakes · ${n.x} blunders</span><span>${n.Fork} forks · ${n.Recapture} recaptures · ${n.Trade} trades</span></div>`};
  const x=RV.k?RV.it[RV.k-1]:null;
- el.innerHTML=`<div class="rvh"><b>Game review</b><button class="btn" id="rvx">Close</button></div><div class="rvs">${st('w')+st('b')}</div>`
+ el.innerHTML=`<div class="rvh"><b>Game review</b><button class="btn" id="rvx">Close</button></div><div class="rvs">${st('w')+st('b')}</div>${gfx()}`
  +`<div class="rvd">${x?`<b class="cq q${x.q}">${QL[x.q]}</b> ${x.t.map(y=>`<i class="tc">${y}</i>`).join('')}<div>${x.n.join(' · ')}</div>${x.q!='b'?`<button class="btn" data-a="1">${RV.a?'Back to the game':'Show the better move'}</button>`:''}`:'Tap a move or use ◀ ▶ to step through the game.'}</div>`
  +`<div class="rvl">${RV.it.map((y,i)=>`<button class="rm q${y.q}${RV.k==i+1?' on':''}" data-k="${i+1}">${i%2?'':(i/2+1)+'. '}${y.san}${QG[y.q]?' '+QG[y.q]:''}${y.t.includes('Fork')?' ⚡':''}${y.t.includes('Recapture')?' ↻':''}${y.t.includes('Trade')?' ⇄':''}</button>`).join('')}</div>`
  +`<div class="rc"><button class="btn" data-g="f">⏮</button><button class="btn" data-g="-1">◀</button><button class="btn" data-g="1">▶</button><button class="btn" data-g="l">⏭</button></div>`}
 function rvClose(){const f=RV;RV=null;rvw=0;document.body.classList.remove('rv');hnt=null;if(f){S=f.P[f.n];last=f.M[f.n-1]}if(spec&&!(net&&net.spec)){spec=0;busy=0}upd();if(net&&net.pend){const p=net.pend;net.pend=null;specApply(...p)}}
-$('#mv').onclick=e=>{const b=e.target.closest('button');if(!b||!RV)return;
+$('#mv').onclick=e=>{const gp=e.target.closest&&e.target.closest('.eg');if(gp&&RV&&RV.it){const r=gp.getBoundingClientRect();go(Math.round((e.clientX-r.left)/r.width*RV.n));return}const b=e.target.closest('button');if(!b||!RV)return;
  if(b.id=='rvx')return rvClose();
- const d=b.dataset;if(d.k!=null)go(+d.k);else if(d.a)go(RV.k,!RV.a);else if(d.g)go(d.g=='f'?0:d.g=='l'?RV.n:RV.k+ +d.g);else if(d.z)review()};
+ const d=b.dataset;if(d.k!=null)go(+d.k,d.a=='1');else if(d.a)go(RV.k,!RV.a);else if(d.m)nextKey(+d.m);else if(d.g)go(d.g=='f'?0:d.g=='l'?RV.n:RV.k+ +d.g);else if(d.z)review()};
 $('#rw').onclick=review;$('#ra2').onclick=()=>{$('#ovr').classList.remove('show');review()};
 function netSend(r){if(!net)return;if(r){net.r=r;net.rc=me}if(net.p2p)return p2pSend({t:'st',m:net.mv,r:net.r,rc:net.rc});if(!room)return;const g={id:net.id,o:net.opp,c:me,m:net.mv};if(net.r)g.r=net.r;room.presence({g}).catch(()=>{})}
-function netLeave(){if(net&&room&&!net.p2p)room.presence({g:null}).catch(()=>{});p2pClose();net=null;spec=0}
-function startOnline(x){net={id:x.id,opp:x.opp,n:x.n,mv:''};cfg.s=x.c;cfg.o='ai';cfg.m=x.m;cfg.i=x.i;$('#ovo').classList.remove('show');$('#ovc').classList.remove('show');newGame();netSend()}
+function netLeave(){if(net&&room&&!net.p2p)room.presence({g:null}).catch(()=>{});cancelLobby();p2pClose();net=null;spec=0}
+function startOnline(x){net={id:x.id,opp:x.opp,n:x.n,mv:''};cfg.s=x.c;cfg.o='ai';cfg.m=x.m;cfg.i=x.i;$('#ovo').classList.remove('show');$('#ovc').classList.remove('show');$('#ovm').classList.remove('show');newGame();netSend()}
 function nmOf(p){return String(p.presence.n||'Player').slice(0,16)}
 function onP(ch){
- const ps=ch.peers,m0=ps.find(p=>p.sameTab);myP=m0&&m0.peer;
+ const ps=ch.peers,m0=ps.find(p=>p.sameTab);myP=m0&&m0.peer;lobP(ps);
  const oth=ps.filter(p=>!p.isMe&&p.kind=='viewer');
  $('#on').textContent=oth.length?'Online · '+oth.length:'Online';
  $('#pl').innerHTML=oth.length?oth.map(p=>{const g=p.presence.g,w=out&&out.to==p.peer;return `<div class="lr"><i class="${g?'bz':''}"></i><span>${esc(nmOf(p))}${p.guest?' · guest':''}</span><small>${g?'In a game':w?'Waiting…':'Available'}</small><button class="btn" data-p="${esc(p.peer)}"${g||net||out&&!w?' disabled':''}>${w?'Cancel':'Challenge'}</button></div>`}).join(''):'<p class="em">Nobody else is here yet. Share this page and ask a friend to open it.</p>';
- if(!net&&!inc)for(const p of oth){const c=p.presence.ch;if(c&&c.to==myP&&!seen[c.id]){seen[c.id]=1;inc={p:p.peer,c,n:nmOf(p)};$('#ch').textContent=inc.n+' challenges you';$('#cs').textContent='You play '+(c.c=='w'?'Black':'White')+' · '+(+c.m?c.m+' min':'no clock')+(+c.i?' +'+c.i+'s':'');$('#ovc').classList.add('show');break}}
+ if(!net&&!inc)for(const p of oth){const c=p.presence.ch;if(c&&!c.lb&&c.to==myP&&!seen[c.id]){seen[c.id]=1;inc={p:p.peer,c,n:nmOf(p)};$('#ch').textContent=inc.n+' challenges you';$('#cs').textContent='You play '+(c.c=='w'?'Black':'White')+' · '+(+c.m?c.m+' min':'no clock')+(+c.i?' +'+c.i+'s':'');$('#ovc').classList.add('show');break}}
  if(inc){const p=oth.find(q=>q.peer==inc.p),c=p&&p.presence.ch;if(!c||c.id!=inc.c.id){inc=null;$('#ovc').classList.remove('show')}}
  if(out){const p=oth.find(q=>q.peer==out.to),g=p&&p.presence.g;
   if(g&&g.id==out.id){const o=out;out=null;room.presence({ch:null}).catch(()=>{});startOnline({id:o.id,opp:o.to,c:o.c,n:o.n,m:o.m,i:o.i})}
@@ -535,12 +553,12 @@ $('#ca').onclick=()=>{if(!inc)return;const x=inc;inc=null;if(out){out=null;room.
 $('#cd').onclick=()=>{if(!inc)return;room.presence({dc:inc.c.id}).catch(()=>{});setTimeout(()=>room.presence({dc:null}).catch(()=>{}),6000);inc=null;$('#ovc').classList.remove('show')};
 const sv=(()=>{try{return localStorage.getItem('chessName')}catch(e){}})();$('#nmi').value=sv||'Player '+(100+Math.random()*900|0);
 $('#nmi').oninput=e=>{try{localStorage.setItem('chessName',e.target.value)}catch(x){}if(room)room.presence({n:e.target.value.slice(0,16)}).catch(()=>{})};
-$('#on').onclick=()=>{syncSeg();$('#ovo').classList.add('show')};
+$('#on').onclick=()=>{cfg.o='on';syncSeg();$('#ovm').classList.add('show');goOnline()};
 $('#oc').onclick=()=>$('#ovo').classList.remove('show');
 $('#ovo').onclick=e=>{if(e.target.id=='ovo')e.target.classList.remove('show')};
 $('#ost').textContent='Connecting…';
 (window.claude&&claude.use?claude.use('room'):Promise.resolve(null)).then(r=>{
- if(!r)return;$('#apb').hidden=false;
+ if(!r){rmFail=1;if(cfg.o=='on')goOnline();return}$('#apb').hidden=false;
  room=r;$('#ost').textContent='Everyone who has this page open right now appears here.';
  room.presence({n:$('#nmi').value.slice(0,16)}).catch(()=>{});room.onPeers(onP,()=>{$('#ost').textContent='Online play disconnected.'})}).catch(()=>{});
 setInterval(()=>{if(net&&!net.p2p&&!over&&room){const p=room.peers().find(q=>q.peer==net.opp);if(!p){net.gt=net.gt||Date.now();if(Date.now()-net.gt>15000&&!net.gn){net.gn=1;toast('Opponent disconnected','r')}}else net.gt=0}},3000);
@@ -554,7 +572,7 @@ dec=s=>Array.from({length:s.length/3|0},(_,i)=>({f:B64.indexOf(s[3*i]),t:B64.ind
 ucl=s=>s.split('-').filter(u=>/^[a-h][1-8][a-h][1-8][qrbn]?$/.test(u)).map(u=>({f:F.indexOf(u[0])+(8-u[1])*8,t:F.indexOf(u[2])+(8-u[3])*8,pr:u[4]?u[4].toUpperCase():undefined})),
 inClaude=!!window.claude,
 gather=pc=>new Promise(r=>{if(pc.iceGatheringState=='complete')return r();pc.addEventListener('icegatheringstatechange',()=>pc.iceGatheringState=='complete'&&r());setTimeout(r,3500)}),
-sub=(r,fn)=>new Promise((ok,no)=>{let es,o=0;try{es=new EventSource('https://ntfy.sh/chess-'+r+'/sse')}catch(e){return no()}const t=setTimeout(()=>{if(!o){es.close();no()}},6000);es.onopen=()=>{o=1;clearTimeout(t);ok(es)};es.onerror=()=>{if(!o){clearTimeout(t);es.close();no()}};es.onmessage=e=>{try{fn(JSON.parse(JSON.parse(e.data).message))}catch(x){}}}),
+sub=(r,fn)=>new Promise((ok,no)=>{let es,o=0;try{es=new EventSource('https://ntfy.sh/chess-'+r+'/sse?since=20s')}catch(e){return no()}const t=setTimeout(()=>{if(!o){es.close();no()}},6000);es.onopen=()=>{o=1;clearTimeout(t);ok(es)};es.onerror=()=>{if(!o){clearTimeout(t);es.close();no()}};es.onmessage=e=>{try{fn(JSON.parse(JSON.parse(e.data).message))}catch(x){}}}),
 pub=(r,m)=>fetch('https://ntfy.sh/chess-'+r,{method:'POST',body:JSON.stringify(m)}),
 box=h=>{$('#pbox').innerHTML=h;$('#pbox').hidden=false};
 function cpy(t){try{navigator.clipboard.writeText(t)}catch(e){}const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();toast('Copied','y')}
@@ -578,11 +596,11 @@ function applyRemote(s,r){
  while(!over&&S.t==ai&&s.length>=net.mv.length+3){const k=net.mv.length,f=B64.indexOf(s[k]),t=B64.indexOf(s[k+1]),pr=s[k+2]=='-'?undefined:s[k+2],m=L.find(x=>x.f==f&&x.t==t&&x.pr==pr);if(!m)break;play(m)}
  if(r&&!over){net.r=r;net.rc=ai;if(r=='rs')rsg=ai;else lost=ai;sel=-1;tg=new Map;upd();finish()}}
 function startP2P(x){net={id:'p2p',opp:null,n:x.n,mv:'',p2p:1};cfg.s=x.c;cfg.o='ai';cfg.m=x.m;cfg.i=x.i;$('#ovo').classList.remove('show');$('#ovm').classList.remove('show');newGame()}
-function startSpec(h){net={id:'p2p',spec:1,n:String(h.hn||'Host').slice(0,16),mv:'',p2p:1};cfg.o='fr';cfg.s='w';cfg.m='0';$('#ovo').classList.remove('show');$('#ovm').classList.remove('show');newGame();spec=1;busy=1;specApply(h.m,h.r,h.rc)}
+function startSpec(h){net={id:'p2p',spec:1,n:String(h.hn||'Host').slice(0,16),mv:'',p2p:1};cfg.o='ai';cfg.s='w';cfg.m='0';$('#ovo').classList.remove('show');$('#ovm').classList.remove('show');newGame();spec=1;busy=1;specApply(h.m,h.r,h.rc)}
 function specApply(s,r,rc){s=String(s||'');if(rvw){net.pend=[s,r,rc];return}loadMoves(dec(s));net.mv=s;fresh=1;if(r){if(r=='rs')rsg=rc;else lost=rc}upd();if(over)finish()}
 function onMsg(c,m){
  if(m.t=='nm'&&P2.host){c.name=String(m.n||'Friend').slice(0,16);
-  if(!c.role){if(!P2.opp){c.role='p';P2.opp=c;const hc=cfg.s=='r'?'wb'[Math.random()*2|0]:cfg.s;startP2P({c:hc,n:c.name,m:cfg.m,i:cfg.i});c.dc.send(JSON.stringify({t:'hi',role:'p',c:hc=='w'?'b':'w',hn:myName(),m:cfg.m,i:cfg.i}))}
+  if(!c.role){if(!P2.opp){c.role='p';P2.opp=c;const L0=LB0||{c:cfg.s=='r'?'wb'[Math.random()*2|0]:cfg.s,m:cfg.m,i:cfg.i},hc=L0.c;startP2P({c:hc,n:c.name,m:L0.m,i:L0.i});c.dc.send(JSON.stringify({t:'hi',role:'p',c:hc=='w'?'b':'w',hn:myName(),m:L0.m,i:L0.i}))}
    else{c.role='s';c.dc.send(JSON.stringify({t:'hi',role:'s',hn:myName(),m:net?net.mv:'',r:net&&net.r,rc:net&&net.rc}))}}}
  else if(m.t=='hi'&&!P2.host){c.role=m.role;if(m.role=='p')startP2P({c:m.c,n:String(m.hn||'Host').slice(0,16),m:m.m,i:m.i});else startSpec({hn:m.hn,m:m.m,r:m.r,rc:m.rc})}
  else if(m.t=='st'&&net&&net.p2p){
@@ -608,5 +626,56 @@ $('#pbox').onclick=async e=>{const b=e.target.closest('button[data-a]');if(!b)re
  else if(a=='jn'){try{const c=await mkGuest(unpack($('#jc').value));box(`<p>Send this reply code back to your friend:</p><textarea id="mc" readonly>${pack(c.answer)}</textarea><button class="btn" data-a="cm">Copy code</button><p>Keep this page open. The game starts when they paste it.</p>`)}catch(x){toast('That code didn’t work','r')}}};
 $('#pc').onclick=()=>createRoom().catch(()=>toast('Peer-to-peer isn’t available here','r'));$('#pj').onclick=joinCode;
 $('#sh').onclick=share;$('#gx').onclick=()=>$('#ovg').classList.remove('show');$('#gc').onclick=()=>cpy($('#gu').value);$('#ovg').onclick=e=>{if(e.target.id=='ovg')e.target.classList.remove('show')};
+const hs=s=>{let a=0xdeadbeef,b=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=Math.imul(a^c,2654435761);b=Math.imul(b^c,1597334677)}a=Math.imul(a^a>>>16,2246822507)^Math.imul(b^b>>>13,3266489909);b=Math.imul(b^b>>>16,2246822507)^Math.imul(a^a>>>13,3266489909);return(4294967296*(2097151&b)+(a>>>0)).toString(36)},
+pw=(id,c)=>hs(id+':'+c),
+rnd7=()=>Array.from({length:7},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
+let LB0=null,LBS={},lbT=0,jid=null,jtxt='',rmFail=0;
+async function bus(){if(P2.es)return 1;try{p2pClose();P2.room='lobby';P2.es=await sub('lobby',onSig2);return 1}catch(e){return 0}}
+async function onSig2(m){
+ if(m.t=='lb'){if(!LB0||m.id!=LB0.id){LBS[m.id]={...m,src:'n',ts:Date.now()};lobUI()}}
+ else if(LB0&&P2.host&&m.t=='join'&&m.lb==LB0.id&&m.p==pw(m.g,LB0.code)){const c=await mkHost();c.gid=m.g;pub('lobby',{t:'offer',to:m.g,sdp:c.offer}).catch(()=>{})}
+ else if(P2.host&&m.t=='answer'){const c=P2.c.find(x=>x.gid==m.from);if(c)c.pc.setRemoteDescription(m.sdp).catch(()=>{})}
+ else if(!P2.host&&m.t=='offer'&&m.to==P2.gid&&!P2.got){P2.got=1;const c=await mkGuest(m.sdp);pub('lobby',{t:'answer',from:P2.gid,sdp:c.answer}).catch(()=>{})}}
+function lobP(ps){for(const k in LBS)if(LBS[k].src=='r')delete LBS[k];
+ for(const p of ps){const l=!p.isMe&&p.kind=='viewer'&&p.presence.lb;if(l&&l.id)LBS[l.id]={...l,n:nmOf(p),src:'r',peer:p.peer}}
+ if(LB0&&room&&!net)for(const p of ps){const c=p.presence.ch;if(c&&c.lb==LB0.id&&c.to==myP&&!seen[c.id]&&c.p==pw(c.id,LB0.code)){seen[c.id]=1;const o=LB0;cancelLobby();startOnline({id:c.id,opp:p.peer,c:o.c,n:nmOf(p),m:c.m,i:c.i});break}}
+ lobUI()}
+function announce(){if(!LB0)return;const m={t:'lb',id:LB0.id,m:LB0.m,i:LB0.i,c:LB0.c,h:pw(LB0.id,LB0.code),lv:P2.opp?1:0};
+ if(room)room.presence({lb:m}).catch(()=>{});else{m.n=myName();pub('lobby',m).catch(()=>{})}}
+async function makeLobby(){if(LB0)return;
+ if(!room&&!(await bus())){toast('Online play isn’t reachable here','r');return}
+ const id=rnd(5),code=rnd7(),c=cfg.s=='r'?'wb'[Math.random()*2|0]:cfg.s;
+ LB0={id,code,c,m:cfg.m,i:cfg.i};if(!room)P2.host=1;announce();lbT=setInterval(announce,5000);lobUI(1)}
+function cancelLobby(){if(!LB0)return;LB0=null;clearInterval(lbT);if(room)room.presence({lb:null}).catch(()=>{});P2.host=0}
+function lobUI(f){const el=$('#lob');if(!el)return;const a=document.activeElement;if(!f&&a&&a.classList&&a.classList.contains('pw'))return;
+ const now=Date.now(),ls=Object.values(LBS).filter(l=>(l.src=='r'||now-l.ts<16000)&&(!LB0||l.id!=LB0.id));
+ el.innerHTML=(LB0?`<div class="mine"><small>Your passcode</small><b data-l="cp" title="Copy">${LB0.code}</b><span>Share it with your friend. ${P2.opp?'Game in progress.':'Waiting for an opponent…'}</span><button class="btn" data-l="cx">Close lobby</button></div>`:'<button class="btn pri" data-l="mk">Create lobby</button>')
+ +(ls.length?ls.map(l=>`<div class="lr"><i class="${l.lv?'bz':''}"></i><span>${esc(l.n||'Player')}</span><small>${+l.m?l.m+' min':'no clock'}${l.lv?' · live':''}</small>${jid==l.id?`<input class="pw" maxlength="7" placeholder="Passcode" value="${esc(jtxt)}"><button class="btn pri" data-l="go">Go</button>`:`<button class="btn" data-l="jn" data-id="${esc(l.id)}">${l.lv?'Watch':'Join'}</button>`}</div>`).join(''):'<p class="em">No open lobbies right now. Create one and share the passcode with a friend.</p>')}
+async function joinLobby(l,code){
+ if(l.src=='r'){if(net||out)return;const gid=rnd(6),c=l.c=='w'?'b':'w';out={id:gid,to:l.peer,c,m:l.m,i:l.i,n:l.n,t:Date.now()};room.presence({ch:{to:l.peer,id:gid,c,m:l.m,i:l.i,lb:l.id,p:pw(gid,code)}}).catch(()=>{});toast('Joining…','y')}
+ else{if(!P2.es&&!(await bus())){toast('Can’t reach the relay','r');return}P2.host=0;P2.got=0;P2.gid=rnd(8);pub('lobby',{t:'join',lb:l.id,g:P2.gid,p:pw(P2.gid,code)}).then(()=>toast('Joining…','y')).catch(()=>toast('Can’t reach the relay','r'))}}
+function tryJoin(){const l=LBS[jid];if(!l){toast('That lobby closed','r');jid=null;lobUI(1);return}
+ const code=jtxt.toUpperCase().replace(/[^A-Z]/g,'');if(pw(l.id,code)!=l.h){toast('Wrong passcode','r');return}
+ jid=null;joinLobby(l,code)}
+async function goOnline(){
+ if(room){lobUI(1);return}
+ if(inClaude&&!rmFail){$('#lob').innerHTML='<p class="em">Connecting to the lobby…</p>';return}
+ $('#lob').innerHTML='<p class="em">Connecting…</p>';
+ if(await bus())lobUI(1);else $('#lob').innerHTML='<p class="em">The lobby isn’t reachable from here. Open this page from claude.ai while signed in, or host the downloaded page on your own site.</p>'}
+$('#lob').onclick=e=>{const b=e.target.closest('button[data-l],b[data-l]');if(!b)return;const a=b.dataset.l;
+ if(a=='mk')makeLobby();else if(a=='cx'){cancelLobby();lobUI(1)}else if(a=='cp')cpy(LB0.code);
+ else if(a=='jn'){jid=b.dataset.id;jtxt='';lobUI(1);const i=$('#lob .pw');if(i)i.focus()}else if(a=='go')tryJoin()};
+$('#lob').oninput=e=>{if(e.target.classList.contains('pw'))jtxt=e.target.value.toUpperCase()};
+$('#lob').onkeydown=e=>{if(e.key=='Enter'&&e.target.classList.contains('pw'))tryJoin()};
+setInterval(()=>{if(cfg.o=='on'&&$('#ovm').classList.contains('show'))lobUI()},4000);
+function gfx(){const n=RV.n,w=300/n,km=RV.km||[];
+ const bars=RV.it.map((x,i)=>{const v=x.e,h=Math.max(Math.abs(v)/800*32,.8),y=v>=0?35-h:35;return `<rect x="${(i*w).toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(w-.6,.8).toFixed(1)}" height="${h.toFixed(1)}" fill="${v>=0?'#f2f2f2':'#2a2a2e'}"/>`}).join('');
+ const cur=RV.k?`<rect x="${((RV.k-1)*w).toFixed(1)}" y="0" width="${Math.max(w,1.4).toFixed(1)}" height="70" fill="none" stroke="#0a84ff" stroke-width="1.2"/>`:'';
+ const dots=km.map(k=>`<circle cx="${((k-.5)*w).toFixed(1)}" cy="4" r="2.4" fill="#ff3b30"/>`).join('');
+ const kms=km.map(k=>{const x=RV.it[k-1],neg=x.q=='m'||x.q=='x';return `<button class="km q${x.q}${RV.k==k?' on':''}" data-k="${k}" data-a="${neg?1:0}"><b>${Math.ceil(k/2)}${k%2?'.':'…'} ${x.san}${QG[x.q]?' '+QG[x.q]:''} · ${QL[x.q]}</b><span>${x.n.join(' · ')}</span></button>`}).join('');
+ return `<svg class="eg" viewBox="0 0 300 70" preserveAspectRatio="none"><rect width="300" height="70" fill="rgba(128,128,128,.28)"/><line x1="0" x2="300" y1="35" y2="35" stroke="rgba(128,128,128,.6)" stroke-width=".6"/>${bars}${cur}${dots}</svg>`+(kms?`<div class="rvh kh"><b>Key moments</b><span><button class="btn" data-m="-1">◀</button><button class="btn" data-m="1">▶</button></span></div><div class="kml">${kms}</div>`:'')}
+function nextKey(d){const km=RV.km||[];if(!km.length)return;let k=d>0?km.find(x=>x>RV.k):[...km].reverse().find(x=>x<RV.k);if(k==null)k=d>0?km[0]:km[km.length-1];const x=RV.it[k-1];go(k,x.q=='m'||x.q=='x'?1:0)}
+function arw(v){const a=hnt,P=i=>{const c=i&7,r=i>>3;return[((v=='w'?c:7-c)+.5)*12.5,((v=='w'?r:7-r)+.5)*12.5]},[x1,y1]=P(a.f),[x2,y2]=P(a.t),dx=x2-x1,dy=y2-y1,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l,ex=x2-ux*4.2,ey=y2-uy*4.2,sx=x1+ux*2.5,sy=y1+uy*2.5;
+ return `<svg class="arw" viewBox="0 0 100 100"><line x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="#34c759" stroke-opacity=".85" stroke-width="2.4" stroke-linecap="round"/><path d="M${x2} ${y2}L${ex-uy*3.2} ${ey+ux*3.2}L${ex+uy*3.2} ${ey-ux*3.2}Z" fill="#34c759" fill-opacity=".9"/></svg>`}
 S=home();last=null;sn=[];stack=[];applyCu();upd();addEventListener('hashchange',onHash);onHash();
 </script></body></html>
